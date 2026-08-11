@@ -1,0 +1,41 @@
+/* nav.js — render the left sidebar used by all pages */
+function renderSidebar(active){
+  const root = document.getElementById('sidebar-root');
+  if(!root) return;
+  const html = `
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo-icon">🏦</div>
+        <div class="logo-text">
+          <h2>USSA Bank</h2>
+          <p>DIGITAL BANKING</p>
+        </div>
+      </div>
+
+      <div class="muted">Welcome back</div>
+      <div style="font-weight:700">${(window.ACCOUNT && ACCOUNT.holderName) ? ACCOUNT.holderName.split(' ')[0] : 'Customer'}</div>
+
+      <nav class="nav">
+        <a href="dashboard.html" class="nav-item" data-key="dashboard"><span class="icon">🏠</span>Dashboard</a>
+        <a href="transactions.html" class="nav-item" data-key="transactions"><span class="icon">📜</span>Transactions</a>
+        <a href="transfer.html" class="nav-item" data-key="transfer"><span class="icon">💸</span>Transfer</a>
+        <a href="cards.html" class="nav-item" data-key="cards"><span class="icon">💳</span>Cards</a>
+        <a href="insights.html" class="nav-item" data-key="insights"><span class="icon">📊</span>Insights</a>
+        <a href="profile.html" class="nav-item" data-key="profile"><span class="icon">👤</span>Profile</a>
+      </nav>
+
+      <div style="margin-top:auto;display:flex;gap:8px;align-items:center;justify-content:space-between">
+        <div style="font-size:13px;opacity:0.95">Support · 24/7</div>
+        <a href="index.html" style="color:inherit;text-decoration:none;font-weight:700">Sign out</a>
+      </div>
+    </aside>
+  `;
+  root.innerHTML = html;
+
+  // mark active link
+  const items = root.querySelectorAll('.nav-item');
+  items.forEach(i => {
+    if(i.dataset.key === active) i.classList.add('active');
+    i.addEventListener('click', () => items.forEach(x => x.classList.remove('active')));
+  });
+}
