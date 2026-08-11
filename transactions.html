@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transactions — USSA Bank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app-shell">
+  <div id="sidebar-root"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <div class="eyebrow">All accounts</div>
+        <h1>Transactions</h1>
+        <div class="sub" id="txnCount"></div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <select id="filterCategory" style="padding:9px 12px;border:1px solid var(--line);border-radius:6px;font-size:13px;"></select>
+        <select id="filterAccount" style="padding:9px 12px;border:1px solid var(--line);border-radius:6px;font-size:13px;">
+          <option value="all">All accounts</option>
+          <option value="Checking">Checking</option>
+          <option value="Savings">Savings</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card card-pad">
+      <div id="txnList"></div>
+    </div>
+  </main>
+</div>
+
+<script src="data.js"></script>
+<script src="nav.js"></script>
+<script>
+renderSidebar("transactions");
+
+const catSelect = document.getElementById("filterCategory");
+const cats = ["all", ...new Set(TRANSACTIONS.map(t => t.category))];
+catSelect.innerHTML = cats.map(c => `<option value="${c}">${c === "all" ? "All categories" : c}</option>`).join("");
+
+function renderList() {
+  const cat = document.getElementById("filterCategory").value;
+  const acct = document.getElementById("filterAccount").value;
+  const filtered = TRANSACTIONS.filter(t =>
+    (cat === "all" || t.category === cat) &&
+    (acct === "all" || t.account === acct)
+  );
+
+  document.getElementById("txnCount").textContent = `${filtered.length} transactions`;
+
+  if (filtered.length === 0) {
+    document.getElementById("txnList").innerHTML = `
+      <div class="empty-state">
+        <h3>No matching transactions</h3>
+        <p>Try a different category or account filter.</p>
+      </div>`;
+    return;
+  }
+
+  document.getElementById("txnList").innerHTML = filtered.map(t => `
+    <a class="txn-row" href="transaction-detail.html?id=${t.id}" style="text-decoration:none;color:inherit;">
+      <div class="txn-icon">${categoryInitial(t.category)}</div>
+      <div>
+        <div class="txn-merchant">${t.merchant}</div>
+        <div class="txn-meta">${formatDate(t.date)} · ${t.account} · ${t.category}</div>
+      </div>
+      <span class="pill ${t.status === "Posted" ? "pill-green" : "pill-slate"}">${t.status}</span>
+      <div class="txn-amount ${t.amount > 0 ? "pos" : "neg"}">${t.amount > 0 ? "+" : ""}${formatCurrency(t.amount)}</div>
+    </a>
+  `).join("");
+}
+
+document.getElementById("filterCategory").addEventListener("change", renderList);
+document.getElementById("filterAccount").addEventListener("change", renderList);
+renderList();
+</script>
+</body>
+</html>

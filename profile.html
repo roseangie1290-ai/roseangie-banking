@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile — USSA Bank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app-shell">
+  <div id="sidebar-root"></div>
+
+  <main class="main" style="max-width:720px;">
+    <div class="page-header">
+      <div>
+        <div class="eyebrow">Account</div>
+        <h1>Profile & Settings</h1>
+      </div>
+    </div>
+
+    <div class="card card-pad" style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+      <div class="avatar" style="width:56px;height:56px;font-size:20px;background:var(--brass);color:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:600;" id="profAvatar"></div>
+      <div>
+        <div style="font-family:var(--font-display);font-size:19px;font-weight:600;" id="profName"></div>
+        <div class="sub" id="profSince"></div>
+      </div>
+    </div>
+
+    <div class="card card-pad" style="margin-bottom:20px;">
+      <div class="section-title">Personal Information</div>
+      <div class="grid-2">
+        <div class="field"><label>Full Name</label><input type="text" id="fName" readonly></div>
+        <div class="field"><label>Email</label><input type="text" value="evita.angie@example.com" readonly></div>
+        <div class="field"><label>Phone</label><input type="text" value="(555) 019-2247" readonly></div>
+        <div class="field"><label>Mailing Address</label><input type="text" value="4410 Larkspur Ave" readonly></div>
+      </div>
+    </div>
+
+    <div class="card card-pad">
+      <div class="section-title">Account Details</div>
+      <div class="flex-between" style="padding:9px 0;border-bottom:1px solid var(--line);"><span class="sub">Checking</span><span class="mono" id="chkNum"></span></div>
+      <div class="flex-between" style="padding:9px 0;"><span class="sub">Savings</span><span class="mono" id="savNum"></span></div>
+    </div>
+  </main>
+</div>
+
+<script src="data.js"></script>
+<script src="nav.js"></script>
+<script>
+renderSidebar("profile");
+document.getElementById("profAvatar").textContent = ACCOUNT.initials;
+document.getElementById("profName").textContent = ACCOUNT.holderName;
+document.getElementById("profSince").textContent = "Member since " + ACCOUNT.memberSince;
+document.getElementById("fName").value = ACCOUNT.holderName;
+document.getElementById("chkNum").textContent = ACCOUNT.checkingNumber;
+document.getElementById("savNum").textContent = ACCOUNT.savingsNumber;
+</script>
+</body>
+</html>

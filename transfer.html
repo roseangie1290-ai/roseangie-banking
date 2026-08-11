@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transfer — USSA Bank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app-shell">
+  <div id="sidebar-root"></div>
+
+  <main class="main" style="max-width:640px;">
+    <div class="page-header">
+      <div>
+        <div class="eyebrow">Move Money</div>
+        <h1>Transfer</h1>
+        <div class="sub">Send money between your accounts instantly</div>
+      </div>
+    </div>
+
+    <div class="card card-pad">
+      <form id="transferForm">
+        <div class="field">
+          <label>From</label>
+          <select id="fromAcct">
+            <option>Checking · **** 4471</option>
+            <option>Savings · **** 8820</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>To</label>
+          <select id="toAcct">
+            <option>Savings · **** 8820</option>
+            <option>Checking · **** 4471</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Amount</label>
+          <input type="text" id="amount" placeholder="$0.00" value="500.00">
+          <div class="hint" id="availHint"></div>
+        </div>
+
+        <div class="field">
+          <label>Memo (optional)</label>
+          <input type="text" placeholder="e.g. Monthly savings" value="Monthly savings">
+        </div>
+
+        <button type="submit" class="btn btn-brass btn-block" style="padding:12px;">Review transfer</button>
+      </form>
+    </div>
+
+    <div id="confirmBox"></div>
+  </main>
+</div>
+
+<script src="data.js"></script>
+<script src="nav.js"></script>
+<script>
+renderSidebar("transfer");
+
+document.getElementById("availHint").textContent = "Available in Checking: " + formatCurrency(ACCOUNT.checkingBalance);
+
+document.getElementById("transferForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  const amt = document.getElementById("amount").value;
+  const from = document.getElementById("fromAcct").value;
+  const to = document.getElementById("toAcct").value;
+  
+  document.getElementById("confirmBox").innerHTML = `
+    <div class="card card-pad" style="margin-top:20px;background:var(--green-bg);border-color:var(--green);">
+      <div class="section-title" style="color:var(--green);">Transfer Completed ✓</div>
+      <p class="sub" style="margin-bottom:14px;color:var(--green);">Your transfer has been processed successfully.</p>
+      <div class="flex-between" style="padding:8px 0;border-bottom:1px solid rgba(46,125,91,0.2);"><span class="sub">Amount</span><span class="mono" style="font-weight:600;">${amt}</span></div>
+      <div class="flex-between" style="padding:8px 0;border-bottom:1px solid rgba(46,125,91,0.2);"><span class="sub">From</span><span>${from}</span></div>
+      <div class="flex-between" style="padding:8px 0;"><span class="sub">To</span><span>${to}</span></div>
+    </div>
+  `;
+});
+</script>
+</body>
+</html>

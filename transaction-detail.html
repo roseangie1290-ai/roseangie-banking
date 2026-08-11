@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transaction Detail — USSA Bank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app-shell">
+  <div id="sidebar-root"></div>
+
+  <main class="main" style="max-width:640px;">
+    <div class="page-header">
+      <div>
+        <a href="transactions.html" class="sub" style="display:inline-flex;align-items:center;gap:6px;margin-bottom:10px;">&larr; Back to transactions</a>
+        <h1>Transaction detail</h1>
+      </div>
+    </div>
+
+    <div id="detailCard"></div>
+  </main>
+</div>
+
+<script src="data.js"></script>
+<script src="nav.js"></script>
+<script>
+renderSidebar("transactions");
+
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+const t = TRANSACTIONS.find(x => x.id === id) || TRANSACTIONS[0];
+
+document.getElementById("detailCard").innerHTML = `
+  <div class="card card-pad" style="text-align:center;padding:36px 26px;">
+    <div class="txn-icon" style="width:56px;height:56px;font-size:20px;margin:0 auto 16px;">${categoryInitial(t.category)}</div>
+    <div style="font-family:var(--font-display);font-size:20px;font-weight:600;">${t.merchant}</div>
+    <div class="balance-figure ${t.amount > 0 ? "" : ""}" style="font-size:36px;margin-top:10px;color:${t.amount > 0 ? "var(--green)" : "var(--ink)"};">     
+      ${t.amount > 0 ? "+" : ""}${formatCurrency(t.amount)}
+    </div>
+    <span class="pill ${t.status === "Posted" ? "pill-green" : "pill-slate"}" style="margin-top:12px;">${t.status}</span>
+  </div>
+
+  <div class="card card-pad" style="margin-top:20px;">
+    <div class="section-title">Details</div>
+    <div class="flex-between" style="padding:10px 0;border-bottom:1px solid var(--line);">
+      <span class="sub">Date</span><span class="mono">${formatDate(t.date)}</span>
+    </div>
+    <div class="flex-between" style="padding:10px 0;border-bottom:1px solid var(--line);">
+      <span class="sub">Category</span><span>${t.category}</span>
+    </div>
+    <div class="flex-between" style="padding:10px 0;border-bottom:1px solid var(--line);">
+      <span class="sub">Account</span><span>${t.account}</span>
+    </div>
+    <div class="flex-between" style="padding:10px 0;border-bottom:1px solid var(--line);">
+      <span class="sub">Transaction ID</span><span class="mono">${t.id.toUpperCase()}</span>
+    </div>
+    <div class="flex-between" style="padding:10px 0;">
+      <span class="sub">Type</span><span>${t.type === "credit" ? "Deposit" : "Withdrawal"}</span>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:10px;margin-top:20px;">
+    <button class="btn btn-ghost" onclick="alert('PDF receipt download functionality')">Download receipt</button>
+    <button class="btn btn-ghost" onclick="alert('Dispute flow')">Report an issue</button>
+  </div>
+`;
+</script>
+</body>
+</html>

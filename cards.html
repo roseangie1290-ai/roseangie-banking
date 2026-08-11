@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cards — USSA Bank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.credit-card {
+  border-radius: 16px;
+  padding: 22px;
+  color: #F7F5F0;
+  height: 170px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(18,32,61,0.2);
+}
+.credit-card::after {
+  content: "";
+  position: absolute;
+  right: -30px; top: -30px;
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  border: 1px solid rgba(247,245,240,0.15);
+}
+.credit-card .top { display: flex; justify-content: space-between; align-items: flex-start; font-size: 12px; }
+.credit-card .num { font-family: var(--font-mono); font-size: 16px; letter-spacing: 2px; }
+.credit-card .bottom { display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px; }
+.credit-card .bottom .label { opacity: 0.55; font-size: 9.5px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px;}
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+  <div id="sidebar-root"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <div class="eyebrow">Payment Methods</div>
+        <h1>Cards</h1>
+        <div class="sub">Manage your credit and debit cards</div>
+      </div>
+    </div>
+
+    <div id="cardGrid" class="grid-3"></div>
+  </main>
+</div>
+
+<script src="data.js"></script>
+<script src="nav.js"></script>
+<script>
+renderSidebar("cards");
+
+document.getElementById("cardGrid").innerHTML = CARDS.map(c => `
+  <div class="stack">
+    <div class="credit-card" style="background:${c.color};">
+      <div class="top">
+        <span>${c.nickname}</span>
+        <span>${c.network}</span>
+      </div>
+      <div class="num">•••• •••• •••• ${c.last4}</div>
+      <div class="bottom">
+        <div>
+          <div class="label">Cardholder</div>
+          <div>${ACCOUNT.holderName}</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="label">Type</div>
+          <div>${c.type}</div>
+        </div>
+      </div>
+    </div>
+    <div class="card card-pad">
+      <div class="flex-between" style="margin-bottom:${c.limit ? "10px" : "0"};">
+        <span class="pill ${c.status === "Active" ? "pill-green" : "pill-slate"}">${c.status}</span>
+        <button class="btn btn-ghost btn-sm" onclick="this.closest('.stack').querySelector('.pill').textContent = this.closest('.stack').querySelector('.pill').textContent === 'Active' ? 'Locked' : 'Active'; this.closest('.stack').querySelector('.pill').className = this.closest('.stack').querySelector('.pill').textContent === 'Active' ? 'pill pill-green' : 'pill pill-slate';">
+          ${c.status === "Active" ? "Lock Card" : "Unlock"}
+        </button>
+      </div>
+      ${c.limit ? `
+        <div class="sub" style="margin-bottom:6px;">${formatCurrency(c.used)} of ${formatCurrency(c.limit)} used</div>
+        <div style="height:6px;background:var(--line);border-radius:3px;overflow:hidden;">
+          <div style="height:100%;width:${(c.used / c.limit) * 100}%;background:var(--brass);"></div>
+        </div>
+      ` : ""}
+    </div>
+  </div>
+`).join("");
+</script>
+</body>
+</html>

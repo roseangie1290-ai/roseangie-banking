@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — USSA Bank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app-shell">
+  <div id="sidebar-root"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <div class="eyebrow">Good afternoon</div>
+        <h1 id="greetName">Dashboard</h1>
+        <div class="sub" id="todayDate"></div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <a href="transfer.html" class="btn btn-brass">Transfer money</a>
+        <a href="transactions.html" class="btn btn-ghost">View all activity</a>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:24px;">
+      <div class="card card-pad">
+        <div class="flex-between" style="margin-bottom:14px;">
+          <div class="section-title" style="margin:0;">Checking · USSA Signature</div>
+          <span class="pill pill-slate" id="checkingAcct"></span>
+        </div>
+        <div class="balance-figure" id="checkingBalance" style="font-size:34px;"></div>
+        <div class="sub" style="margin-top:6px;">Available balance</div>
+      </div>
+
+      <div class="card card-pad">
+        <div class="flex-between" style="margin-bottom:14px;">
+          <div class="section-title" style="margin:0;">Savings · Growth Reserve</div>
+          <span class="pill pill-slate" id="savingsAcct"></span>
+        </div>
+        <div class="balance-figure" id="savingsBalance" style="font-size:34px;"></div>
+        <div class="sub" style="margin-top:6px;">2.15% APY · interest paid monthly</div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="align-items:start;">
+      <div class="card card-pad">
+        <div class="section-title">
+          Recent activity
+          <a href="transactions.html" class="btn btn-ghost btn-sm">See all</a>
+        </div>
+        <div class="ledger-rail" id="recentTxns"></div>
+      </div>
+
+      <div class="stack">
+        <div class="card card-pad">
+          <div class="section-title">This month at a glance</div>
+          <div id="glanceStats"></div>
+        </div>
+
+        <div class="card card-pad">
+          <div class="section-title">Quick actions</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <a href="transfer.html" class="btn btn-ghost" style="justify-content:flex-start;">Move money between accounts</a>
+            <a href="cards.html" class="btn btn-ghost" style="justify-content:flex-start;">Manage cards</a>
+            <a href="insights.html" class="btn btn-ghost" style="justify-content:flex-start;">Review spending insights</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="data.js"></script>
+<script src="nav.js"></script>
+<script>
+renderSidebar("dashboard");
+
+document.getElementById("greetName").textContent = "Welcome, " + ACCOUNT.holderName.split(" ")[0];
+document.getElementById("todayDate").textContent = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+document.getElementById("checkingAcct").textContent = ACCOUNT.checkingNumber;
+document.getElementById("savingsAcct").textContent = ACCOUNT.savingsNumber;
+document.getElementById("checkingBalance").textContent = formatCurrency(ACCOUNT.checkingBalance);
+document.getElementById("savingsBalance").textContent = formatCurrency(ACCOUNT.savingsBalance);
+
+const recent = TRANSACTIONS.slice(0, 6);
+document.getElementById("recentTxns").innerHTML = recent.map(t => `
+  <div style="position:relative;padding:10px 0 10px 14px;">
+    <span class="ledger-tick" style="top:16px;"></span>
+    <div class="flex-between">
+      <div>
+        <div class="txn-merchant">${t.merchant}</div>
+        <div class="txn-meta">${formatDate(t.date)} · ${t.category}</div>
+      </div>
+      <div class="txn-amount ${t.amount > 0 ? "pos" : "neg"}">${t.amount > 0 ? "+" : ""}${formatCurrency(t.amount)}</div>
+    </div>
+  </div>
+`).join("");
+
+const monthTxns = TRANSACTIONS.filter(t => t.date.startsWith("2026-08"));
+const income = monthTxns.filter(t => t.amount > 0).reduce((s,t)=>s+t.amount,0);
+const spend = monthTxns.filter(t => t.amount < 0).reduce((s,t)=>s+Math.abs(t.amount),0);
+document.getElementById("glanceStats").innerHTML = `
+  <div class="flex-between" style="margin-bottom:12px;">
+    <span class="sub">Income</span>
+    <span class="mono" style="color:var(--green);font-weight:600;">+${formatCurrency(income)}</span>
+  </div>
+  <div class="flex-between" style="margin-bottom:12px;">
+    <span class="sub">Spending</span>
+    <span class="mono" style="color:var(--ink);font-weight:600;">-${formatCurrency(spend)}</span>
+  </div>
+  <div class="divider"></div>
+  <div class="flex-between">
+    <span class="sub">Net</span>
+    <span class="mono" style="font-weight:700;">${formatCurrency(income - spend)}</span>
+  </div>
+`;
+</script>
+</body>
+</html>

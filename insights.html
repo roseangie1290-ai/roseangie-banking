@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insights — USSA Bank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app-shell">
+  <div id="sidebar-root"></div>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <div class="eyebrow">Last Month</div>
+        <h1>Spending Insights</h1>
+        <div class="sub">Track your spending patterns</div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="align-items:start;">
+      <div class="card card-pad">
+        <div class="section-title">By category</div>
+        <div id="barList"></div>
+      </div>
+
+      <div class="stack">
+        <div class="card card-pad">
+          <div class="section-title">Summary</div>
+          <div id="summaryStats"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="data.js"></script>
+<script src="nav.js"></script>
+<script>
+renderSidebar("insights");
+
+const spendCats = INSIGHTS_MONTHLY.filter(c => c.category !== "Payroll" && c.category !== "Rent" && c.amount > 0)
+  .sort((a,b) => b.amount - a.amount);
+const maxAmt = Math.max(...spendCats.map(c => c.amount));
+const totalSpend = spendCats.reduce((s,c) => s + c.amount, 0);
+const income = Math.abs(INSIGHTS_MONTHLY.find(c => c.category === "Payroll").amount);
+const rent = INSIGHTS_MONTHLY.find(c => c.category === "Rent").amount;
+
+document.getElementById("barList").innerHTML = spendCats.map(c => `
+  <div style="margin-bottom:16px;">
+    <div class="flex-between" style="margin-bottom:6px;">
+      <span style="font-size:13px;font-weight:600;">${c.category}</span>
+      <span class="mono" style="font-size:13px;">${formatCurrency(c.amount)}</span>
+    </div>
+    <div style="height:8px;background:var(--line);border-radius:4px;overflow:hidden;">
+      <div style="height:100%;width:${(c.amount / maxAmt) * 100}%;background:var(--brass);border-radius:4px;"></div>
+    </div>
+  </div>
+`).join("");
+
+document.getElementById("summaryStats").innerHTML = `
+  <div class="flex-between" style="padding:9px 0;border-bottom:1px solid var(--line);">
+    <span class="sub">Total income</span><span class="mono" style="color:var(--green);font-weight:600;">+${formatCurrency(income)}</span>
+  </div>
+  <div class="flex-between" style="padding:9px 0;border-bottom:1px solid var(--line);">
+    <span class="sub">Housing</span><span class="mono">${formatCurrency(rent)}</span>
+  </div>
+  <div class="flex-between" style="padding:9px 0;border-bottom:1px solid var(--line);">
+    <span class="sub">Discretionary</span><span class="mono">${formatCurrency(totalSpend)}</span>
+  </div>
+  <div class="flex-between" style="padding:9px 0;">
+    <span class="sub">Left over</span><span class="mono" style="font-weight:700;">${formatCurrency(income - rent - totalSpend)}</span>
+  </div>
+`;
+</script>
+</body>
+</html>
