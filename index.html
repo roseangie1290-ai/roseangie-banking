@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>USSA Bank — Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="login-shell">
+  <div class="login-visual">
+    <div style="display:flex;align-items:center;gap:10px;position:relative;z-index:1;">
+      <svg width="30" height="30" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="14.5" stroke="#B08D57" stroke-width="1.4"/>
+        <path d="M16 8 L22 12.5 V19.5 L16 24 L10 19.5 V12.5 Z" stroke="#F7F5F0" stroke-width="1.4" fill="none"/>
+        <circle cx="16" cy="16" r="2.4" fill="#B08D57"/>
+      </svg>
+      <div style="font-family:var(--font-display);font-size:19px;font-weight:600;">USSA Bank</div>
+    </div>
+
+    <div class="login-quote">
+      "Banking that works for you, whenever you need it."
+      <span class="attribution">— USSA Bank</span>
+    </div>
+
+    <div style="position:relative;z-index:1;font-size:11.5px;color:rgba(247,245,240,0.5);">
+      Secure. Simple. Reliable.
+    </div>
+  </div>
+
+  <div class="login-form-side">
+    <div class="login-box">
+      <div class="wordmark-lg">Welcome back</div>
+      <div class="tagline">Sign in to your account</div>
+
+      <form id="loginForm">
+        <div class="field">
+          <label for="username">Username or Email</label>
+          <input type="text" id="username" placeholder="you@example.com" autocomplete="username">
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="••••••••••" autocomplete="current-password">
+        </div>
+        <div id="errorMsg" style="font-size:12px;color:var(--red);margin-bottom:12px;display:none;"></div>
+        <div class="flex-between" style="font-size:12px;margin-bottom:16px;">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+            <input type="checkbox" style="cursor:pointer;">
+            Remember me
+          </label>
+          <a href="#" style="color:var(--brass);text-decoration:none;">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" style="padding:12px;margin-bottom:16px;">Sign in</button>
+      </form>
+
+      <div class="divider"></div>
+      <div style="font-size:12px;color:var(--slate);text-align:center;">
+        Don't have an account? <a href="#" style="color:var(--brass);font-weight:600;text-decoration:none;">Open one now</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const VALID_USERNAME = "Roseangie12";
+const VALID_PASSWORD = "Niggah1234$";
+
+document.getElementById("loginForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  const errorMsg = document.getElementById("errorMsg");
+  
+  if (username === VALID_USERNAME && password === VALID_PASSWORD) {
+    errorMsg.style.display = "none";
+    window.location.href = "dashboard.html";
+  } else {
+    errorMsg.style.display = "block";
+    errorMsg.textContent = "Invalid username or password. Please try again.";
+    document.getElementById("password").value = "";
+  }
+});
+</script>
+</body>
+</html>
