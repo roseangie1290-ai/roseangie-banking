@@ -1,0 +1,37 @@
+/* data.js — sample account data and helper functions used by the pages */
+const ACCOUNT = {
+  holderName: 'Evita Angie',
+  initials: 'EA',
+  memberSince: '2021',
+  checkingNumber: '••• 1024',
+  savingsNumber: '••• 2247',
+  checkingBalance: 5234.72,
+  savingsBalance: 12893.45
+};
+
+const TRANSACTIONS = [
+  { id: 't1', date: '2026-08-10', merchant: 'Payroll Co', category: 'Income', account: 'Checking', amount: 2500.00, status: 'Posted' },
+  { id: 't2', date: '2026-08-09', merchant: 'Whole Foods', category: 'Groceries', account: 'Checking', amount: -84.12, status: 'Posted' },
+  { id: 't3', date: '2026-08-08', merchant: 'Cinema', category: 'Entertainment', account: 'Checking', amount: -23.50, status: 'Posted' },
+  { id: 't4', date: '2026-08-07', merchant: 'Starbucks', category: 'Coffee', account: 'Checking', amount: -6.75, status: 'Posted' },
+  { id: 't5', date: '2026-08-06', merchant: 'Electric Co', category: 'Utilities', account: 'Savings', amount: -120.20, status: 'Pending' },
+  { id: 't6', date: '2026-08-01', merchant: 'Spotify', category: 'Subscription', account: 'Checking', amount: -9.99, status: 'Posted' }
+];
+
+function formatCurrency(n){
+  if(typeof n !== 'number') return n;
+  return n.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+}
+
+function formatDate(s){
+  try{
+    const d = new Date(s);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }catch(e){
+    return s;
+  }
+}
+
+function categoryInitial(cat){
+  return (cat && cat[0]) ? cat[0].toUpperCase() : '•';
+}
